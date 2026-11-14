@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Panel docente | Secure Teacher Portal</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="wordmark" th:href="@{/dashboard}">
+        <span class="logo-mark small" aria-hidden="true">ST</span>
+        <span>Secure Teacher</span>
+    </a>
+    <div class="user-actions">
+        <span class="teacher-pill" id="teacher-name" th:text="${teacherName}">teacher@school.edu</span>
+        <form th:action="@{/logout}" method="post">
+            <button id="logout-button" class="button ghost" type="submit">Cerrar sesión</button>
+        </form>
+    </div>
+</header>
+
+<main class="dashboard-shell">
+    <section class="hero-row">
+        <div>
+            <span class="eyebrow dark">SOFTWARE TESTING · 2026</span>
+            <h1>Panel de calificaciones</h1>
+            <p class="muted">Consulta el rendimiento y registra retroalimentación para tus estudiantes.</p>
+        </div>
+        <div class="stat-card">
+            <span>Estudiantes</span>
+            <strong th:text="${#lists.size(students)}">3</strong>
+        </div>
+    </section>
+
+    <div id="success-message" class="alert alert-success wide" th:if="${successMessage}"
+         th:text="${successMessage}"></div>
+
+    <section class="content-grid">
+        <article class="panel table-panel">
+            <div class="panel-heading">
+                <div>
+                    <span class="eyebrow dark">REGISTRO</span>
+                    <h2>Lista de estudiantes</h2>
+                </div>
+                <span class="status-dot">Actualizado</span>
+            </div>
+
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Estudiante</th>
+                        <th>Nota</th>
+                        <th>Comentario</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="student : ${students}" th:id="'student-' + ${student.id}">
+                        <td><span class="code-pill" th:text="${student.code}">ST-001</span></td>
+                        <td>
+                            <strong th:text="${student.fullName}">Ana Torres</strong>
+                            <small th:text="${student.course}">Software Testing</small>
+                        </td>
+                        <td><span class="grade-badge student-grade" th:text="${student.grade}">16.0</span></td>
+                        <td class="student-feedback" th:text="${student.feedback}">Buen avance.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <aside class="panel form-panel">
+            <span class="eyebrow dark">EVALUACIÓN</span>
+            <h2>Actualizar nota</h2>
+            <p class="muted">Todos los campos son validados en el servidor.</p>
+
+            <form id="grade-form" th:action="@{/grades}" th:object="${gradeForm}" method="post">
+                <label for="studentId">Estudiante</label>
+                <select id="studentId" th:field="*{studentId}" required>
+                    <option value="">Seleccionar</option>
+                    <option th:each="student : ${students}" th:value="${student.id}"
+                            th:text="${student.fullName}">Ana Torres</option>
+                </select>
+                <small class="field-error" th:if="${#fields.hasErrors('studentId')}"
+                       th:errors="*{studentId}"></small>
+
+                <label for="grade">Calificación (0–20)</label>
+                <input id="grade" th:field="*{grade}" type="number" min="0" max="20" step="0.5" required>
+                <small class="field-error" th:if="${#fields.hasErrors('grade')}" th:errors="*{grade}"></small>
+
+                <label for="feedback">Retroalimentación</label>
+                <textarea id="feedback" th:field="*{feedback}" maxlength="180" rows="4"
+                          placeholder="Escribe un comentario breve" required></textarea>
+                <small class="field-error" th:if="${#fields.hasErrors('feedback')}"
+                       th:errors="*{feedback}"></small>
+
+                <button id="save-grade-button" class="button primary" type="submit">Guardar cambios</button>
+            </form>
+        </aside>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Acceso | Secure Teacher Portal</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="login-page">
+<main class="login-shell">
+    <section class="brand-panel" aria-label="Descripción del portal">
+        <span class="eyebrow">PORTAL DOCENTE SEGURO</span>
+        <h1>Gestiona el progreso de tu clase con confianza.</h1>
+        <p>Un entorno académico de demostración construido con validaciones, autenticación y pruebas de seguridad.</p>
+        <div class="security-note">
+            <span aria-hidden="true">✓</span>
+            Sesión protegida y formularios con CSRF
+        </div>
+    </section>
+
+    <section class="login-card">
+        <div class="logo-mark" aria-hidden="true">ST</div>
+        <p class="eyebrow dark">SECURE TEACHER</p>
+        <h2>Bienvenido</h2>
+        <p class="muted">Ingresa tus credenciales para continuar.</p>
+
+        <div id="login-error" class="alert alert-error" th:if="${param.error}">
+            Usuario o contraseña incorrectos.
+        </div>
+        <div id="logout-message" class="alert alert-success" th:if="${param.logout}">
+            La sesión se cerró correctamente.
+        </div>
+
+        <form th:action="@{/login}" method="post" autocomplete="on">
+            <label for="username">Correo institucional</label>
+            <input id="username" name="username" type="email" autocomplete="username"
+                   placeholder="teacher@school.edu" required>
+
+            <label for="password">Contraseña</label>
+            <input id="password" name="password" type="password" autocomplete="current-password"
+                   placeholder="••••••••••" required>
+
+            <button id="login-button" class="button primary" type="submit">Iniciar sesión</button>
+        </form>
+
+        <div class="demo-credentials">
+            <strong>Acceso de demostración</strong>
+            <span>teacher@school.edu / Secure123!</span>
+        </div>
+    </section>
+</main>
+</body>
+</html>
