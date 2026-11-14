@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -29,6 +30,18 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/login?logout")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID"))
+                .headers(headers -> {
+                    headers.contentSecurityPolicy(csp -> csp.policyDirectives(
+                            "default-src 'self'; style-src 'self'; img-src 'self' data:; "
+                                    + "form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"));
+                    headers.referrerPolicy(referrer -> referrer.policy(ReferrerPolicy.SAME_ORIGIN));
+                    headers.addHeaderWriter((request, response) -> {
+                        response.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+                        response.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+                        response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+                        response.setHeader("Cross-Origin-Resource-Policy", "same-origin");
+                    });
+                })
                 .build();
     }
 
